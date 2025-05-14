@@ -2,6 +2,7 @@ package com.Utech.journalApp.controller;
 
 import com.Utech.journalApp.Entity.JournalEntity;
 import com.Utech.journalApp.services.JournalEntryService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,14 +26,14 @@ public class JournalEntryControllerV2 {
     }
     //there are two ways to send data request paramter and path variable
     @DeleteMapping("id/{Id}")
-    public  void deleteJournalEntry(@PathVariable String Id) {
+    public  void deleteJournalEntry(@PathVariable ObjectId Id) {
         journalEntryService.delete(Id);
 
 
     }
     @GetMapping("/find/{id}")
-    public JournalEntity findJournalEntry(@PathVariable Long id) {
-        return journalEntryService.findById(String.valueOf(id));
+    public JournalEntity findJournalEntry(@PathVariable ObjectId id) {
+        return journalEntryService.findById(id);
 
     }
 }

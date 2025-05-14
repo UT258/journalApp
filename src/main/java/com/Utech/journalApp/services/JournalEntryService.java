@@ -2,6 +2,7 @@ package com.Utech.journalApp.services;
 
 import com.Utech.journalApp.Entity.JournalEntity;
 import com.Utech.journalApp.Repository.JournalRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +17,13 @@ public class JournalEntryService {
     public void save(JournalEntity myJournalEntity) {
         journalRepository.save(myJournalEntity);
     }
-    public void  delete(String id ) {
+    public void  delete(ObjectId id ) {
         journalRepository.deleteById(id);
     }
     public List<JournalEntity>getAllJournalEntries() {
         return journalRepository.findAll();
     }
-    public JournalEntity findById(String id) {
+    public JournalEntity findById(ObjectId id) {
         return journalRepository.findById(id).orElse(null);
     }
     //this will save the data in the database
