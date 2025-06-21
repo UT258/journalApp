@@ -1,6 +1,7 @@
 package com.Utech.journalApp.controller;
 
 import com.Utech.journalApp.Entity.JournalEntity;
+import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -10,7 +11,7 @@ import java.util.Map;
 //@RestController
 //@RequestMapping("/journal")
 public class journalEntrycontroller {
-    private Map<String ,JournalEntity>JournalEntry = new HashMap<>();
+    private Map<ObjectId,JournalEntity>JournalEntry = new HashMap<>();
     //this is the map which will store the journal entries
     //rest api will be used to add the journal entries
     //and get the journal entries

@@ -4,6 +4,8 @@ import com.Utech.journalApp.Entity.JournalEntity;
 import com.Utech.journalApp.services.JournalEntryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +28,9 @@ public class JournalEntryControllerV2 {
     }
     //there are two ways to send data request paramter and path variable
     @DeleteMapping("id/{Id}")
-    public  void deleteJournalEntry(@PathVariable ObjectId Id) {
+    public ResponseEntity<JournalEntity> deleteJournalEntry(@PathVariable ObjectId Id) {
         journalEntryService.delete(Id);
+        return new ResponseEntity<>( HttpStatus.OK);
 
 
     }

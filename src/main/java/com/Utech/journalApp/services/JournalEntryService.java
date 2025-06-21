@@ -15,15 +15,19 @@ public class JournalEntryService {
     @Autowired  //this is used to inject the JournalRepository bean into this class
     private JournalRepository journalRepository;
     public void save(JournalEntity myJournalEntity) {
+
         journalRepository.save(myJournalEntity);
     }
     public void  delete(ObjectId id ) {
+
         journalRepository.deleteById(id);
     }
     public List<JournalEntity>getAllJournalEntries() {
+
         return journalRepository.findAll();
     }
     public JournalEntity findById(ObjectId id) {
+
         return journalRepository.findById(id).orElse(null);
     }
     //this will save the data in the database
