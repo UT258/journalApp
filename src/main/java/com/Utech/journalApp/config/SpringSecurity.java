@@ -22,9 +22,12 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/journal/**,/user/**").authenticated()
+                .requestMatchers("/journal/**","/user/**").authenticated()
                 .anyRequest().permitAll()
             )
+                .httpBasic(
+                    Customizer.withDefaults() // Use default basic authentication
+                )
             .csrf(AbstractHttpConfigurer::disable) ;// Disable CSRF for testing / Postman
         // Disable CSRF for testing / Postman
 

@@ -15,16 +15,16 @@ public class UserDetailService  implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user= userRepository.findByUserName(username);
-        if(user != null) {
-          //i have an user create one now
-            User.builder()
-                    .username(user.getUserName())
-                    .password(user.getPassword())
-                    .roles(user.getRoles().toArray(new String[0])) // Convert roles to String array
-                    .build();
-        }
-        return null;
+   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    UserEntity user = userRepository.findByUserName(username);
+    if (user != null) {
+      // FIX: Add the 'return' statement here
+      return User.builder()
+                .username(user.getUserName())
+                .password(user.getPassword())
+                .roles(user.getRoles().toArray(new String[0]))
+                .build();
     }
+    throw new UsernameNotFoundException("User not found: " + username); // Also, throw an exception
+}
 }
