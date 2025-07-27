@@ -3,9 +3,14 @@ package com.Utech.journalApp.controller;
 import com.Utech.journalApp.Entity.UserEntity;
 import com.Utech.journalApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.security.Security;
 import java.util.List;
 
 
@@ -14,20 +19,18 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
-    @GetMapping
-    public List<UserEntity> getAllUsers() {
-        return userService.getAllUsers();
-    }
-    @PostMapping
-    public void addUser(@RequestBody UserEntity newUser) {
-        userService.saveUser(newUser);
-    }
+
+
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody UserEntity userEntity) {
-        UserEntity userindb = userService.findById(userEntity.getId());
+        Authentication auth= SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = auth.getName(); // Get the currently authenticated user's name
+        UserEntity userindb = userService.findByName(currentUserName);
+
+
+
         if (userindb!=null)
         {
-            userindb.setName(userEntity.getName());
 
             userindb.setPassword(userEntity.getPassword());
 
@@ -35,7 +38,9 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        userService.saveUser(userEntity); //it will be updated
-        return ResponseEntity.ok().build();
+        userService.saveUser(userindb); //it will be updated
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 }

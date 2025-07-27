@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface UserRepository extends MongoRepository<UserEntity, ObjectId> {
-
+UserEntity findByUserName(String username); // Method to find a user by username
 
 }
