@@ -3,6 +3,8 @@ package com.Utech.journalApp.controller;
 import com.Utech.journalApp.Entity.UserEntity;
 import com.Utech.journalApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController //it is a controller rest controller means it is a rest api
@@ -16,8 +18,8 @@ public class publicController {
     private UserService userService;
 
     @PostMapping
-    public void addUser(@RequestBody UserEntity newUser) {
-
+   public ResponseEntity<String> addUser(@RequestBody UserEntity newUser) {
         userService.saveUser(newUser);
+        return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
     }
 }
