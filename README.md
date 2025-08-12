@@ -39,5 +39,4 @@ The application includes **JWT-based authentication**, **Spring Security**, and 
 
 ---
 
-## 📂 Project Structure
 
