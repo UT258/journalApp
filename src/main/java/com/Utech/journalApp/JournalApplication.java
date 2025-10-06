@@ -10,9 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
-public class
-
-JournalApplication {
+public class JournalApplication {
 
 
 	public static void main(String[] args) {
