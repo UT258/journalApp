@@ -18,14 +18,17 @@ public class UserService {
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public void saveUser(UserEntity userEntity) {
-        // FIX: Only encode password if not already encoded (BCrypt encoded passwords start with "$2a$")
-        if (!userEntity.getPassword().startsWith("$2a$")) {
+        if (userEntity.getPassword() != null && !isBcryptHash(userEntity.getPassword())) {
             userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         }
         if (userEntity.getRoles() == null || userEntity.getRoles().isEmpty()) {
             userEntity.setRoles(List.of("USER"));
         }
         userRepository.save(userEntity);
+    }
+
+    private boolean isBcryptHash(String password) {
+        return password.startsWith("$2a$") || password.startsWith("$2b$") || password.startsWith("$2y$");
     }
 
     public void deleteUser(ObjectId id) {

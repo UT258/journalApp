@@ -1,25 +1,42 @@
 package com.Utech.journalApp.controller;
 
 import com.Utech.journalApp.Entity.UserEntity;
+import com.Utech.journalApp.dto.AuthRequest;
+import com.Utech.journalApp.dto.AuthResponse;
+import com.Utech.journalApp.security.JwtService;
 import com.Utech.journalApp.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-@RestController //it is a controller rest controller means it is a rest api
-//main function of rest controller is to return json data by annotating the class with @RestController
-// @RequestMapping("/healthcheck") //this is the url for the health check
-@RequestMapping("/public") //this is the base url for public endpoints
-//this is the public controller which will be used to check the health of the application
-
+@RestController
+@RequestMapping("/public")
 public class publicController {
-     @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    @PostMapping
-   public ResponseEntity<String> addUser(@RequestBody UserEntity newUser) {
+    public publicController(UserService userService, AuthenticationManager authenticationManager, JwtService jwtService) {
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<String> addUser(@RequestBody UserEntity newUser) {
         userService.saveUser(newUser);
         return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.userName(), request.password()));
+        String token = jwtService.generateToken((UserDetails) authentication.getPrincipal());
+        return ResponseEntity.ok(new AuthResponse(token, "Bearer"));
     }
 }

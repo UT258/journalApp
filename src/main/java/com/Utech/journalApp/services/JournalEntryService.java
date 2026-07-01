@@ -4,46 +4,66 @@ import com.Utech.journalApp.Entity.JournalEntity;
 import com.Utech.journalApp.Entity.UserEntity;
 import com.Utech.journalApp.Repository.JournalRepository;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
-@Component //this is used to mark this class as a Spring component
+@Service
 public class JournalEntryService {
-  //save the data
-    @Autowired  //this is used to inject the JournalRepository bean into this class
-    private JournalRepository journalRepository;
-    @Autowired
-    private  UserService userService; // Assuming you have a UserService to handle user-related operations
-    @Transactional
-    public void save(JournalEntity myJournalEntity,String username) {
-        //you can add the username to the JournalEntity if you want to associate it with a
-        UserEntity user = userService.findByName(username);//got the user
-        JournalEntity journalEntity = journalRepository.save(myJournalEntity);
-        //now add this to jounral entry of user
-        user.getJournalEntries().add(journalEntity);
+    private final JournalRepository journalRepository;
+    private final UserService userService;
+    private final SentimentAnalysisService sentimentAnalysisService;
 
-        userService.saveUser(user); // Save the updated user with the new journal entry
-        //this will save the user with the new journal entry
-        //so we have to save the user entity with the new journal entry
-        //this will save the journal entry in the database
-        //and also add the journal entry to the user entity
-
-
+    public JournalEntryService(JournalRepository journalRepository,
+                               UserService userService,
+                               SentimentAnalysisService sentimentAnalysisService) {
+        this.journalRepository = journalRepository;
+        this.userService = userService;
+        this.sentimentAnalysisService = sentimentAnalysisService;
     }
-    public void  delete(ObjectId id ) {
 
+    @Transactional
+    public JournalEntity save(JournalEntity journalEntity, String username) {
+        UserEntity user = userService.findByName(username);
+        if (journalEntity.getDate() == null) {
+            journalEntity.setDate(new Date());
+        }
+        enrichSentiment(journalEntity);
+        JournalEntity savedEntry = journalRepository.save(journalEntity);
+        boolean alreadyLinked = user.getJournalEntries().stream()
+                .anyMatch(existingEntry -> savedEntry.getId().equals(existingEntry.getId()));
+        if (!alreadyLinked) {
+            user.getJournalEntries().add(savedEntry);
+            userService.saveUser(user);
+        }
+        return savedEntry;
+    }
+
+    public void delete(ObjectId id) {
         journalRepository.deleteById(id);
     }
-    public List<JournalEntity>getAllJournalEntries() {
 
+    public List<JournalEntity> getAllJournalEntries() {
         return journalRepository.findAll();
     }
-    public JournalEntity findById(ObjectId id) {
 
+    public JournalEntity findById(ObjectId id) {
         return journalRepository.findById(id).orElse(null);
     }
-    //this will save the data in the database
+
+    public boolean userOwnsEntry(UserEntity user, ObjectId entryId) {
+        return user != null
+                && user.getJournalEntries() != null
+                && user.getJournalEntries().stream().anyMatch(entry -> entryId.equals(entry.getId()));
+    }
+
+    private void enrichSentiment(JournalEntity journalEntity) {
+        String text = String.join(" ",
+                journalEntity.getTitle() == null ? "" : journalEntity.getTitle(),
+                journalEntity.getContent() == null ? "" : journalEntity.getContent());
+        journalEntity.setSentimentScore(sentimentAnalysisService.score(text));
+        journalEntity.setSentiment(sentimentAnalysisService.classify(text));
+    }
 }
