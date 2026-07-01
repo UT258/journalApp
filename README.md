@@ -1,42 +1,39 @@
-# 📝 Journal Application
+# Journal Application
 
-A secure and feature-rich journal management application built using **Spring Boot** and **MongoDB**, designed to allow users to create, manage, and protect their personal journal entries.  
-The application includes **JWT-based authentication**, **Spring Security**, and **transaction management** for reliable and secure data handling.
+A Spring Boot REST API for private journaling with MongoDB persistence, stateless JWT security, per-user entry isolation, tag-based categorization, and lightweight sentiment trend analysis.
 
----
+## Features
 
-## 🚀 Features
+- **JWT authentication**
+  - `POST /public/signup` registers a user.
+  - `POST /public/login` returns a bearer token for authenticated requests.
+  - Spring Security runs statelessly; protected `/journal/**` and `/user/**` endpoints require `Authorization: Bearer <token>`.
 
-- **User Authentication & Authorization**
-  - Secure signup and login using **JWT** (JSON Web Token)
-  - Role-based access control via **Spring Security**
+- **Per-user journal CRUD**
+  - `GET /journal` lists only the authenticated user's entries.
+  - `POST /journal` creates an entry for the authenticated user.
+  - `GET /journal/{id}`, `PUT /journal/{id}`, and `DELETE /journal/{id}` verify ownership before reading, updating, or deleting an entry.
 
-- **Journal Entry Management**
-  - Create, read, update, and delete journal entries
-  - Fetch all entries for a user
-  - Search/filter entries
+- **Tags and categorization**
+  - Entries support a `tags` array.
+  - `GET /journal?tag=<tag>` filters the authenticated user's entries by tag.
 
-- **MongoDB Integration**
-  - NoSQL database for flexible and scalable data storage
-  - CRUD operations using **Spring Data MongoDB**
+- **Sentiment analysis and trends**
+  - Entries are auto-scored with a simple NLP lexicon and classified as `POSITIVE`, `NEUTRAL`, or `NEGATIVE`.
+  - `GET /journal/trends` aggregates sentiment counts for the authenticated user.
 
-- **Transaction Management**
-  - Ensures data integrity for multi-step operations
+- **Swagger/OpenAPI**
+  - Springdoc exposes the API docs at `/swagger-ui.html` and `/v3/api-docs`.
 
-- **REST API Architecture**
-  - Clean and modular controller-service-repository design
+## Tech Stack
 
----
+- Java 17
+- Spring Boot, Spring Web, Spring Security
+- Spring Data MongoDB / MongoDB Atlas
+- JWT via JJWT
+- Swagger UI via Springdoc OpenAPI
+- Maven, Lombok, JUnit
 
-## 🛠️ Tech Stack
+## Resume-accurate description
 
-- **Backend:** Spring Boot, Spring Web, Spring Data MongoDB, Spring Security
-- **Authentication:** JWT (JSON Web Token)
-- **Database:** MongoDB
-- **Build Tool:** Maven
-- **Language:** Java 17+
-- **Others:** Lombok, Transaction Management
-
----
-
-
+Built a secure Spring Boot journaling REST API backed by MongoDB Atlas with JWT-based stateless authentication, per-user data isolation, complete journal CRUD, tag filtering, Swagger/OpenAPI docs, and automated sentiment classification with trend aggregation.

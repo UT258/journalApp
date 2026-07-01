@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserDetailService  implements UserDetailsService {
     @Autowired
@@ -22,7 +24,7 @@ public class UserDetailService  implements UserDetailsService {
       return User.builder()
                 .username(user.getUserName())
                 .password(user.getPassword())
-                .roles(user.getRoles().toArray(new String[0]))
+                .roles((user.getRoles() == null ? List.of("USER") : user.getRoles()).toArray(new String[0]))
                 .build();
     }
     throw new UsernameNotFoundException("User not found: " + username); // Also, throw an exception
