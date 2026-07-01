@@ -34,6 +34,3 @@ A Spring Boot REST API for private journaling with MongoDB persistence, stateles
 - Swagger UI via Springdoc OpenAPI
 - Maven, Lombok, JUnit
 
-## Resume-accurate description
-
-Built a secure Spring Boot journaling REST API backed by MongoDB Atlas with JWT-based stateless authentication, per-user data isolation, complete journal CRUD, tag filtering, Swagger/OpenAPI docs, and automated sentiment classification with trend aggregation.
